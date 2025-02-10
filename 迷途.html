@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>迷途 - 个人主页</title>
+    <!-- 引入 CSS 框架 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 使用国内 CDN -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 自定义样式 */
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f39c12;
+            --accent-color: #e74c3c;
+            --bg-light: #f8f9fa;
+            --text-dark: #2c3e50;
+            --gradient-bg: linear-gradient(135deg, #4a90e2, #67b26f);
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-section {
+            background: var(--gradient-bg);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-section h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .profile-section {
+            padding: 2rem 0;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-header {
+            background: var(--gradient-bg);
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            margin-bottom: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .profile-content {
+            padding: 2rem;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: white;
+            background: var(--primary-color);
+        }
+
+        .carousel-section {
+            margin: 2rem 0;
+        }
+
+        .carousel-item img {
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .stats-section {
+            background: white;
+            padding: 2rem 0;
+            margin: 2rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: var(--bg-light);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .chat-container {
+            height: 70vh;
+            overflow-y: auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 1rem;
+            margin-bottom: 4rem;
+        }
+
+        .message {
+            margin: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            max-width: 70%;
+            word-wrap: break-word;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: var(--primary-color);
+            color: white;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            margin-right: auto;
+        }
+
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: white;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .social-links {
+            background: white;
+            padding: 1.5rem 0;
+            margin-bottom: 80px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        }
+
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            margin: 0 15px;
+            border-radius: 50%;
+            color: #666;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            background: var(--bg-light);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .social-icon:hover {
+            transform: translateY(-5px) rotate(360deg);
+            color: white;
+        }
+
+        .fa-github:hover { background: #333; }
+        .fa-weibo:hover { background: #e6162d; }
+        .fa-bilibili:hover { background: #00a1d6; }
+        .fa-qq:hover { background: #12b7f5; }
+        .fa-twitter:hover { background: #1da1f2; }
+
+        @media (max-width: 768px) {
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+            }
+
+            .carousel-item img {
+                height: 300px;
+            }
+
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+
+            .social-icon {
+                width: 40px;
+                height: 40px;
+                margin: 0 10px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav-section">
+        <div class="container">
+            <h1><i class="fas fa-code"></i> 迷途的个人空间</h1>
+        </div>
+    </nav>
+
+    <!-- 个人资料部分 -->
+    <section class="profile-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <img src="./images/avatar.jpg" alt="头像" class="profile-avatar"
+                                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23eee%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22>头像</text></svg>';">
+                            <h2>迷途</h2>
+                            <p>Web开发者 / 设计师</p>
+                        </div>
+                        <div class="profile-content">
+                            <h5>技能标签</h5>
+                            <div class="skill-tags">
+                                <span class="skill-tag">HTML5</span>
+                                <span class="skill-tag">CSS3</span>
+                                <span class="skill-tag">JavaScript</span>
+                                <span class="skill-tag">Vue.js</span>
+                                <span class="skill-tag">Python</span>
+                            </div>
+                            <hr>
+                            <h5>关于我</h5>
+                            <p>热爱编程和设计的开发者，专注于创造优秀的用户体验。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <!-- 照片轮播 -->
+                    <div id="photoCarousel" class="carousel slide carousel-section" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#photoCarousel" data-bs-slide-to="0" class="active"></button>
+                            <button type="button" data-bs-target="#photoCarousel" data-bs-slide-to="1"></button>
+                            <button type="button" data-bs-target="#photoCarousel" data-bs-slide-to="2"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="./images/photo1.jpg" class="d-block w-100" alt="照片1"
+                                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22><rect width=%22100%%22 height=%22100%%22 fill=%22%23eee%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22>作品展示 1</text></svg>';">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="./images/photo2.jpg" class="d-block w-100" alt="照片2"
+                                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22><rect width=%22100%%22 height=%22100%%22 fill=%22%23eee%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22>作品展示 2</text></svg>';">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="./images/photo3.jpg" class="d-block w-100" alt="照片3"
+                                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22><rect width=%22100%%22 height=%22100%%22 fill=%22%23eee%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22>作品展示 3</text></svg>';">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 统计数据部分 -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <i class="fas fa-project-diagram stat-icon"></i>
+                        <h3>50+</h3>
+                        <p>完成项目</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <i class="fas fa-code-branch stat-icon"></i>
+                        <h3>1000+</h3>
+                        <p>代码提交</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <i class="fas fa-users stat-icon"></i>
+                        <h3>100+</h3>
+                        <p>合作伙伴</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <i class="fas fa-coffee stat-icon"></i>
+                        <h3>∞</h3>
+                        <p>咖啡杯数</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI 对话区域 -->
+    <div class="container">
+        <div class="chat-container" id="chatContainer">
+            <!-- 对话内容将通过 JavaScript 动态添加 -->
+        </div>
+    </div>
+
+    <!-- 社交媒体链接 -->
+    <div class="social-links">
+        <div class="container text-center">
+            <a href="https://github.com/你的用户名" class="social-icon" target="_blank" title="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://weibo.com/你的用户名" class="social-icon" target="_blank" title="微博">
+                <i class="fab fa-weibo"></i>
+            </a>
+            <a href="https://space.bilibili.com/你的用户名" class="social-icon" target="_blank" title="哔哩哔哩">
+                <i class="fab fa-bilibili"></i>
+            </a>
+            <a href="tencent://message/?uin=你的QQ号码" class="social-icon" title="QQ">
+                <i class="fab fa-qq"></i>
+            </a>
+            <a href="https://twitter.com/你的用户名" class="social-icon" target="_blank" title="Twitter">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- 输入区域 -->
+    <div class="input-area">
+        <div class="container">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="输入你的消息...">
+                <button class="btn btn-primary" disabled>
+                    <i class="fas fa-paper-plane"></i> 发送
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContainer = document.getElementById('chatContainer');
+            const inputField = document.querySelector('.input-group input');
+            const sendButton = document.querySelector('.input-group button');
+
+            inputField.addEventListener('input', function() {
+                sendButton.disabled = !this.value.trim();
+            });
+
+            function getFormattedTime() {
+                const now = new Date();
+                return now.toLocaleTimeString('zh-CN', { 
+                    hour: '2-digit', 
+                    minute: '2-digit'
+                });
+            }
+
+            function sendMessage() {
+                const message = inputField.value.trim();
+                if (message) {
+                    addMessage(message, 'user');
+                    setTimeout(() => {
+                        const aiResponse = `收到你的消息："${message}"。这是AI的自动回复。`;
+                        addMessage(aiResponse, 'ai');
+                    }, 1000);
+                    
+                    inputField.value = '';
+                    sendButton.disabled = true;
+                }
+            }
+
+            function addMessage(text, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}-message`;
+                
+                const messageText = document.createElement('div');
+                messageText.textContent = text;
+                
+                const timeSpan = document.createElement('span');
+                timeSpan.className = 'message-time';
+                timeSpan.textContent = getFormattedTime();
+                
+                messageDiv.appendChild(messageText);
+                messageDiv.appendChild(timeSpan);
+                
+                chatContainer.appendChild(messageDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            sendButton.addEventListener('click', sendMessage);
+
+            inputField.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey && !sendButton.disabled) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // 初始化欢迎消息
+            addMessage('你好！我是AI助手，很高兴为你服务。', 'ai');
+        });
+    </script>
+</body>
+</html>
