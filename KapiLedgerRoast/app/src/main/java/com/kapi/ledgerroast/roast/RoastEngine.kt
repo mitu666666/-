@@ -9,7 +9,12 @@ class RoastEngine {
         if (!settings.roastEnabled) return null
 
         val triggerTag = when (event.trigger) {
-            RoastTrigger.TRANSACTION_SAVED -> if ((event.budgetRatio ?: 0.0) > 1.0) "budget_over" else if ((event.budgetRatio ?: 0.0) >= 0.8) "budget_near" else "expense"
+            RoastTrigger.TRANSACTION_SAVED -> {
+                if (event.isIncome) "income"
+                else if ((event.budgetRatio ?: 0.0) > 1.0) "budget_over"
+                else if ((event.budgetRatio ?: 0.0) >= 0.8) "budget_near"
+                else "expense"
+            }
             RoastTrigger.BUDGET_NEAR -> "budget_near"
             RoastTrigger.BUDGET_OVER -> "budget_over"
             RoastTrigger.GOAL_MILESTONE -> "goal"

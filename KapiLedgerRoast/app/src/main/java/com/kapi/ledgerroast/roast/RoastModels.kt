@@ -16,7 +16,8 @@ data class RoastEvent(
     val amountCents: Long?,
     val budgetRatio: Double?,
     val isNight: Boolean,
-    val isFrequent: Boolean
+    val isFrequent: Boolean,
+    val isIncome: Boolean
 )
 
 data class RoastTemplate(

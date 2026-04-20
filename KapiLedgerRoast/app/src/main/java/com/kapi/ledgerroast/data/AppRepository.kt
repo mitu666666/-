@@ -8,10 +8,8 @@ import com.kapi.ledgerroast.roast.RoastResult
 import com.kapi.ledgerroast.roast.RoastTrigger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 
 class AppRepository(
@@ -66,7 +64,8 @@ class AppRepository(
             amountCents = amountCents,
             budgetRatio = ratio,
             isNight = isNight,
-            isFrequent = false
+            isFrequent = false,
+            isIncome = type == TxType.INCOME
         )
         return engine.generate(settings, event, salt = id xor timestampMs)
     }
@@ -93,6 +92,27 @@ class AppRepository(
     suspend fun addGoalProgress(goal: GoalEntity, deltaCents: Long) {
         val next = (goal.currentCents + deltaCents).coerceAtLeast(0)
         db.goalDao().update(goal.copy(currentCents = next))
+    }
+
+    suspend fun buildGoalRoast(before: GoalEntity, afterCurrentCents: Long): RoastResult? {
+        val settings = prefs.settingsFlow.first()
+        val target = before.targetCents.coerceAtLeast(1)
+        val beforeRatio = before.currentCents.toDouble() / target.toDouble()
+        val afterRatio = afterCurrentCents.toDouble() / target.toDouble()
+
+        val hitMilestone = milestoneHit(beforeRatio, afterRatio)
+        val trigger = if (hitMilestone) RoastTrigger.GOAL_MILESTONE else return null
+
+        val event = RoastEvent(
+            trigger = trigger,
+            category = null,
+            amountCents = null,
+            budgetRatio = afterRatio,
+            isNight = isNight(System.currentTimeMillis()),
+            isFrequent = false,
+            isIncome = false
+        )
+        return engine.generate(settings, event, salt = before.id xor afterCurrentCents)
     }
 
     fun observeMonthlyReport(nowMs: Long): Flow<MonthlyReport> {
@@ -122,9 +142,24 @@ class AppRepository(
             amountCents = null,
             budgetRatio = null,
             isNight = isNight(now),
-            isFrequent = false
+            isFrequent = false,
+            isIncome = false
         )
         return engine.generate(settings, event, salt = now)
+    }
+
+    suspend fun buildReportRoast(nowMs: Long): RoastResult? {
+        val settings = prefs.settingsFlow.first()
+        val event = RoastEvent(
+            trigger = RoastTrigger.REPORT_VIEWED,
+            category = null,
+            amountCents = null,
+            budgetRatio = null,
+            isNight = isNight(nowMs),
+            isFrequent = false,
+            isIncome = false
+        )
+        return engine.generate(settings, event, salt = nowMs)
     }
 
     data class MonthlyReport(
@@ -155,5 +190,10 @@ class AppRepository(
         val zone = ZoneId.systemDefault()
         val hour = Instant.ofEpochMilli(timestampMs).atZone(zone).hour
         return hour >= 23 || hour <= 5
+    }
+
+    private fun milestoneHit(before: Double, after: Double): Boolean {
+        val points = doubleArrayOf(0.25, 0.5, 0.75, 1.0)
+        return points.any { p -> before < p && after >= p }
     }
 }
